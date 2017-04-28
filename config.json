@@ -1,0 +1,53 @@
+{
+	"name": "Check for Duplicates Across Multiple Projects",
+
+	"description": "Checks for duplicate records (as defined by a certain number of matching fields) across one or more studies. For non-repeating projects only.",
+
+    "authors": [
+        {
+            "name": "Scott J. Pearson",
+            "email": "scott.j.pearson@vanderbilt.edu"
+        }
+    ],
+
+	"permissions": [
+		"select_data"
+	],
+
+	"links": {
+		"control-center": [
+		],
+		"project": [
+			{
+				"name": "Check for Duplicates in This Project",
+				"icon": "report",
+				"url": "dupcheck_here.php"
+			},
+			{
+				"name": "Check for Duplicates in All Projects",
+				"icon": "report",
+				"url": "dupcheck_all.php"
+			}
+		]
+	},
+
+	"global-settings": [
+	],
+	
+	"project-settings": [
+		{
+			"key": "project-id",
+			"name": "Project ID(s)",
+			"required": true,
+			"type": "text",
+			"repeatable": true
+		},
+		{
+			"key": "field",
+			"name": "Field(s) To Match in All Projects",
+			"required": true,
+			"type": "field-list",
+			"repeatable": true
+		}
+	]
+}
