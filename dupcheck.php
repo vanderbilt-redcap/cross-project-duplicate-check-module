@@ -1,6 +1,5 @@
 <?php
 namespace ExternalModules;
-require_once __DIR__ . '/../../external_modules/classes/ExternalModules.php';
 require_once ExternalModules::getProjectHeaderPath();
 
 # requires a GET['pid'], a configuration for the current project, and a GET['location'] (this [project] or all)
