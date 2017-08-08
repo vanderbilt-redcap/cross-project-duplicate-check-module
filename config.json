@@ -1,6 +1,8 @@
 {
 	"name": "Check for Duplicates Across Multiple Projects",
 
+	"namespace": "Vanderbilt\\DupcheckExternalModule",
+
 	"description": "Checks for duplicate records (as defined by a certain number of matching fields) across one or more studies. For non-repeating projects only.",
 
     "authors": [
