@@ -1,5 +1,9 @@
 <?php
-namespace ExternalModules;
+namespace Vanderbilt\DupcheckExternalModule;
+
+use ExternalModules\AbstractExternalModule;
+use ExternalModules\ExternalModules;
+
 require_once ExternalModules::getProjectHeaderPath();
 
 # requires a GET['pid'], a configuration for the current project, and a GET['location'] (this [project] or all)
