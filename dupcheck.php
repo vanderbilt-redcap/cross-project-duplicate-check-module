@@ -11,7 +11,8 @@ require_once ExternalModules::getProjectHeaderPath();
 
 $title = \REDCap::getProjectTitle();
 $firstField = \REDCap::getRecordIdField();
-$settings = ExternalModules::getProjectSettingsAsArray("vanderbilt_dupcheck", $_GET['pid']);
+$dupcheckObject = new DupcheckExternalModule();
+$settings = ExternalModules::getProjectSettingsAsArray($dupcheckObject->PREFIX, $_GET['pid']);
 
 $project_ids = $settings['project-id']['value'];
 if (!is_array($project_ids)) {
