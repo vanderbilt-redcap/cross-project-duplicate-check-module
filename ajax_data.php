@@ -12,6 +12,10 @@ define("NOAUTH",true);
 $fieldList = $_POST['fields'];
 $projects = $_POST['projects'];
 $fieldValues = $_POST['fieldValues'];
+$project_id = $_POST['currentproject'];
+$currentProject = new \Project($project_id);
+$currentMeta = $currentProject->metadata;
+$dateValidations = array('date_mdy','date_dmy','date_ymd','datetime_mdy','datetime_dmy','datetime_ymd','datetime_seconds_mdy','datetime_seconds_dmy','datetime_seconds_ymd');
 
 $duplicate = "0";
 $alertMessage = $module->getProjectSetting('alert-message');
@@ -27,6 +31,11 @@ if (!empty($_POST['token'])) {
     if (hash_equals($_SESSION['survey_piping_token'], $_POST['token'])) {
         $fieldNameValues = array();
         foreach ($fieldList as $index => $field) {
+            if (in_array($currentMeta[$field]['element_validation_type'],$dateValidations)) {
+                $dateFormatting = $module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
+                $date = DateTime::createFromFormat($dateFormatting,$fieldValues[$index][0]);
+                $fieldValues[$index][0] = $date->format("Y-m-d");
+            }
             $fieldNameValues[$index] = "[".$field."] = '".$fieldValues[$index][0]."'";
         }
         foreach ($projects as $projectID) {
