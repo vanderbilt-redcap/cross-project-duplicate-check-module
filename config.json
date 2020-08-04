@@ -14,7 +14,8 @@
     ],
 
 	"permissions": [
-		"select_data"
+		"select_data",
+		"redcap_survey_page_top"
 	],
 
 	"links": {
@@ -34,12 +35,16 @@
 		]
 	},
 
+	"no-auth-pages":[
+		"ajax_data"
+	],
+
 	"project-settings": [
 		{
 			"key": "project-id",
 			"name": "Project ID(s)",
 			"required": true,
-			"type": "text",
+			"type": "project-id",
 			"repeatable": true
 		},
 		{
@@ -48,6 +53,16 @@
 			"required": true,
 			"type": "field-list",
 			"repeatable": true
+		},
+		{
+			"key": "display-alert",
+			"name": "Display Alert on Duplicate",
+			"type": "checkbox"
+		},
+		{
+			"key": "alert-message",
+			"name": "Alert Message on Duplication",
+			"type": "text"
 		}
 	]
 }
