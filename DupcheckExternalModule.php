@@ -7,16 +7,15 @@ use ExternalModules\ExternalModules;
 class DupcheckExternalModule extends AbstractExternalModule
 {
     function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id = NULL, $repeat_instance = 1) {
-        //list($transferData,$currentIndex,$formIndex) = $this->getMatchingRecordData("submit",$project_id,$record,$instrument,$event_id,$group_id,null,null,$repeat_instance);
-        /*$currentProject = new \Project($project_id);
-        $currentMeta = $currentProject->metadata;
-        echo "<pre>";
-        print_r($currentMeta);
-        echo "</pre>";*/
+        echo $this->buildJavaString($project_id,$record,$instrument,$event_id,$repeat_instance);
     }
 
     function redcap_survey_page_top($project_id,$record,$instrument,$event_id,$group_id,$survey_hash,$response_id,$repeat_instance = 1)
     {
+        echo $this->buildJavaString($project_id,$record,$instrument,$event_id,$repeat_instance);
+    }
+
+    function buildJavaString($project_id,$record,$instrument,$event_id,$repeat_instance = 1) {
         $project = new \Project($project_id);
         $alertSetting = $this->getProjectSetting('display-alert');
         if ($alertSetting == '1') {

@@ -31,10 +31,12 @@ if (!empty($_POST['token'])) {
     if (hash_equals($_SESSION['survey_piping_token'], $_POST['token'])) {
         $fieldNameValues = array();
         foreach ($fieldList as $index => $field) {
-            if (in_array($currentMeta[$field]['element_validation_type'],$dateValidations)) {
-                $dateFormatting = $module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
-                $date = DateTime::createFromFormat($dateFormatting,$fieldValues[$index][0]);
-                $fieldValues[$index][0] = $date->format("Y-m-d");
+            if (validateDate($fieldValues[$index][0])) {
+                if (in_array($currentMeta[$field]['element_validation_type'], $dateValidations)) {
+                    $dateFormatting = $module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
+                    $date = DateTime::createFromFormat($dateFormatting, $fieldValues[$index][0]);
+                    $fieldValues[$index][0] = $date->format("Y-m-d");
+                }
             }
             $fieldNameValues[$index] = "[".$field."] = '".$fieldValues[$index][0]."'";
         }
@@ -44,7 +46,7 @@ if (!empty($_POST['token'])) {
                 $currentProject = new \Project($projectID);
                 $projectName = $currentProject->project['app_title'];
                 if ($duplicate == "0") {
-                    $duplicate = $alertMessage." has duplicates in the following project(s):\n";
+                    $duplicate = $alertMessage."\n";
                 }
                 $duplicate .= $projectName."\n";
             }
@@ -67,4 +69,10 @@ function parseRecordSetting($recordsetting,$recorddata) {
         $returnString = db_real_escape_string(str_replace($stringsToReplace[$index],$recorddata[$fieldName],$returnString));
     }
     return $returnString;
+}
+
+function validateDate($date,$format='Y-m-d') {
+    $d = DateTime::createFromFormat($format, $date);
+    // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+    return $d && $d->format($format) === $date;
 }
