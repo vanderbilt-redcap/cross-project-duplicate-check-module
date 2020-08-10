@@ -31,7 +31,7 @@ if (!empty($_POST['token'])) {
     if (hash_equals($_SESSION['survey_piping_token'], $_POST['token'])) {
         $fieldNameValues = array();
         foreach ($fieldList as $index => $field) {
-            if (validateDate($fieldValues[$index][0])) {
+            if (validateDate($fieldValues[$index][0],$module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php'))) {
                 if (in_array($currentMeta[$field]['element_validation_type'], $dateValidations)) {
                     $dateFormatting = $module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
                     $date = DateTime::createFromFormat($dateFormatting, $fieldValues[$index][0]);
@@ -40,8 +40,10 @@ if (!empty($_POST['token'])) {
             }
             $fieldNameValues[$index] = "[".$field."] = '".$fieldValues[$index][0]."'";
         }
+
         foreach ($projects as $projectID) {
             $recordData = json_decode(\REDCap::getData($projectID,'json',array(),$fieldList,array(), array(), false, false, false, implode(" AND ",$fieldNameValues)),true);
+
             if (!empty($recordData)) {
                 $currentProject = new \Project($projectID);
                 $projectName = $currentProject->project['app_title'];
