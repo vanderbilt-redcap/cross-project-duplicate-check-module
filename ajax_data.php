@@ -34,8 +34,10 @@ if (!empty($_POST['token'])) {
             if (validateDate($fieldValues[$index][0],$module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php'))) {
                 if (in_array($currentMeta[$field]['element_validation_type'], $dateValidations)) {
                     $dateFormatting = $module->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
-                    $date = DateTime::createFromFormat($dateFormatting, $fieldValues[$index][0]);
-                    $fieldValues[$index][0] = $date->format("Y-m-d");
+                    if ($fieldValues[$index][0] != null) {
+                        $date = DateTime::createFromFormat($dateFormatting, $fieldValues[$index][0]);
+                        $fieldValues[$index][0] = $date->format("Y-m-d");
+                    }
                 }
             }
             $fieldNameValues[$index] = "[".$field."] = '".$fieldValues[$index][0]."'";
