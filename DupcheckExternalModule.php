@@ -22,10 +22,9 @@ class DupcheckExternalModule extends AbstractExternalModule
             $projectIDs = $this->getProjectSetting('project-id');
             $fields = $this->getProjectSetting('field');
 
-            $sess_id_1 = session_id();
-            $sess_id_2 = "cross-duplicate-module";
+            $originalSessionName = session_name();
             session_write_close();
-            session_id($sess_id_2);
+            session_name("cross-duplicate-module");
             session_start();
 
             if (empty($_SESSION['survey_piping_token'])) {
@@ -83,7 +82,7 @@ class DupcheckExternalModule extends AbstractExternalModule
             </script>";
 
             session_write_close();
-            session_id($sess_id_1);
+            session_name($originalSessionName);
             session_start();
             echo $javaString;
         }

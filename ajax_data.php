@@ -1,10 +1,6 @@
 <?php
 
-session_start();
-$sess_id_1 = session_id();
-$sess_id_2 = "cross-duplicate-module";
-session_write_close();
-session_id($sess_id_2);
+session_name("cross-duplicate-module");
 session_start();
 
 define("NOAUTH",true);
@@ -55,10 +51,6 @@ if (!empty($_POST['token'])) {
         }
     }
 }
-
-session_write_close();
-session_id($sess_id_1);
-session_start();
 
 echo $duplicate;
 
