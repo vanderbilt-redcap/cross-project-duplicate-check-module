@@ -5,6 +5,12 @@
 
 	"description": "Checks for duplicate records (as defined by a certain number of matching fields) across one or more projects. If the field matches across multiple records, a duplicate is reported. (Does not currently work for repeating instruments/events.)",
 
+	"framework-version": 11,
+
+	"no-auth-ajax-actions": [
+		"check for duplicates"
+	],
+
     "authors": [
         {
             "name": "Scott J. Pearson",
@@ -25,20 +31,16 @@
 		"project": [
 			{
 				"name": "Check for Duplicates in This Project",
-				"icon": "report",
+				"icon": "fa-solid fa-copy",
 				"url": "dupcheck_here.php"
 			},
 			{
 				"name": "Check for Duplicates in All Projects",
-				"icon": "report",
+				"icon": "fa-solid fa-copy",
 				"url": "dupcheck_all.php"
 			}
 		]
 	},
-
-	"no-auth-pages":[
-		"ajax_data"
-	],
 
 	"project-settings": [
 		{
@@ -65,5 +67,8 @@
 			"name": "Alert Message on Duplication",
 			"type": "text"
 		}
-	]
+	],
+	"compatibility": {
+		"php-version-min": "12.5.9"
+	}
 }

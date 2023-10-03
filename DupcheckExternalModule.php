@@ -22,69 +22,59 @@ class DupcheckExternalModule extends AbstractExternalModule
             $projectIDs = $this->getProjectSetting('project-id');
             $fields = $this->getProjectSetting('field');
 
-            $originalSessionName = session_name();
-            session_write_close();
-            session_name("cross-duplicate-module");
-            session_start();
-
-            if (empty($_SESSION['survey_piping_token'])) {
-                $_SESSION['survey_piping_token'] = bin2hex(random_bytes(32));
-            }
-            $token = $_SESSION['survey_piping_token'];
-
-            $javaString = "<script>
-                $(document).ready(function() {";
-
             if (count($projectIDs) > 0 && count($fields) > 0) {
-                foreach ($fields as $field) {
-                    $javaString .= "$('[name=\"".$field."\"]').change(function() {
-                        checkDuplicateData();
-                    });";
-                }
+                ?>
+                <?=$this->initializeJavascriptModuleObject()?>
+                <script>
+                    $(() => {
+                        const module = <?=$this->getJavascriptModuleObjectName()?>;
 
-                $javaString .= "function checkDuplicateData() {
-                    var fields = ['".implode("','",$fields)."'];
-                    var projectIDs = [".implode(",",$projectIDs)."];
-                    var fieldValues = getModuleFieldValues(fields);
-                    if (fieldValues.length == fields.length) {
-                        $.ajax({
-                            url: '".$this->getUrl('ajax_data.php')."&NOAUTH',
-                            method: 'post',
-                            data: {
-                                'currentproject': $project_id,
-                                'fields': fields,
-                                'projects': projectIDs,
-                                'fieldValues': fieldValues,
-                                'token': '$token'
-                            },
-                            success: function (data) {
-                                //console.log(data);
-                                if (data != '0') {
-                                    alert(data);
-                                }
+                        const checkDuplicateData = () => {
+                            var fields = <?=json_encode($fields)?>;
+                            var projectIDs = <?=json_encode($projectIDs)?>;
+                            var fieldValues = getModuleFieldValues(fields);
+                            if (fieldValues.length == fields.length) {
+                                module.ajax('check for duplicates',  {
+                                    'currentproject': <?=json_encode($project_id)?>,
+                                    'fields': fields,
+                                    'projects': projectIDs,
+                                    'fieldValues': fieldValues,
+                                }).then((response) => {
+                                    if (response != '0') {
+                                        alert(response);
+                                    }
+                                }).catch(function(err) {
+                                    alert('Error checking for duplicates!')
+                                })
                             }
-                        });
-                    }
-                }
-                function getModuleFieldValues(fields) {
-                    var fieldValues = [];
-                    for (var i = 0; i < fields.length; i++) {
-                        fieldValues[i] = [];
-                        $('#'+fields[i]+'-tr :input').each(function() {
-                            fieldValues[i].push($(this).val());
-                        });
-                    }
-                    return fieldValues;
-                }";
+                        }
+
+                        const getModuleFieldValues = (fields) => {
+                            var fieldValues = [];
+                            for (var i = 0; i < fields.length; i++) {
+                                fieldValues[i] = [];
+                                $('#'+fields[i]+'-tr :input').each(function() {
+                                    fieldValues[i].push($(this).val());
+                                });
+                            }
+                            return fieldValues;
+                        }
+                        
+                        <?php foreach ($fields as $field) { ?>
+                            $(<?=json_encode("[name=\"$field\"]")?>).change(function() {
+                                checkDuplicateData()
+                            })
+                        <?php } ?>
+                    })
+                </script>
+                <?php
             }
+        }
+    }
 
-            $javaString .= "});
-            </script>";
-
-            session_write_close();
-            session_name($originalSessionName);
-            session_start();
-            echo $javaString;
+    function redcap_module_ajax($action, $payload, $project_id, $record, $instrument, $event_id, $repeat_instance, $survey_hash, $response_id, $survey_queue_hash, $page, $page_full, $user_id, $group_id) {
+        if($action === 'check for duplicates'){
+            return require_once __DIR__ . '/ajax_data.php';
         }
     }
 
