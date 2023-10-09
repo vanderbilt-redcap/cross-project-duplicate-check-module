@@ -7,6 +7,10 @@
 
 	"framework-version": 11,
 
+	"auth-ajax-actions": [
+		"check for duplicates"
+	],
+
 	"no-auth-ajax-actions": [
 		"check for duplicates"
 	],
