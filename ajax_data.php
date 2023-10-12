@@ -1,9 +1,8 @@
 <?php
 
-$fieldList = $payload['fields'];
-$projects = $payload['projects'];
+$fieldList = $this->getProjectSetting('field');
+$projects = $this->getProjectSetting('project-id');
 $fieldValues = $payload['fieldValues'];
-$project_id = $payload['currentproject'];
 $currentProject = new \Project($project_id);
 $currentMeta = $currentProject->metadata;
 $dateValidations = array('date_mdy','date_dmy','date_ymd','datetime_mdy','datetime_dmy','datetime_ymd','datetime_seconds_mdy','datetime_seconds_dmy','datetime_seconds_ymd');

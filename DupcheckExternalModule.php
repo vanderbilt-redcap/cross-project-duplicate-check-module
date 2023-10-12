@@ -31,13 +31,9 @@ class DupcheckExternalModule extends AbstractExternalModule
 
                         const checkDuplicateData = () => {
                             var fields = <?=json_encode($fields)?>;
-                            var projectIDs = <?=json_encode($projectIDs)?>;
                             var fieldValues = getModuleFieldValues(fields);
                             if (fieldValues.length == fields.length) {
                                 module.ajax('check for duplicates',  {
-                                    'currentproject': <?=json_encode($project_id)?>,
-                                    'fields': fields,
-                                    'projects': projectIDs,
                                     'fieldValues': fieldValues,
                                 }).then((response) => {
                                     if (response != '0') {
