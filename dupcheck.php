@@ -47,7 +47,7 @@ if (isset($_GET['location'])) {
 			WHERE project_id IN (".implode(", ", $project_ids).");";
 	$result = db_query($sql);
 	while ($row = db_fetch_assoc($result)) {
-		$projectTitles[$row['project_id']] = $row['app_title'];
+		$projectTitles[$row['project_id']] = htmlspecialchars($row['app_title'], ENT_QUOTES);
 	}
 
 	echo "<html>";
@@ -117,13 +117,13 @@ if (isset($_GET['location'])) {
 			$vals = explode($sep, $str);
 			$j = 1;
 			foreach ($fields as $field) {
-				echo "<br>$field: ".$vals[$j];
+				echo "<br>$field: ".htmlspecialchars($vals[$j], ENT_QUOTES);
 				$j++;
 			}
 			foreach ($ary as $projectRecord) {
 				$vals = explode($sep, $projectRecord);
 				$project = $projectTitles[$vals[0]];
-				$record = $vals[1];
+				$record = htmlspecialchars($vals[1], ENT_QUOTES);
 				echo "<br><i>$project: Record $record</i>";
 			}
 			echo "</p>";
