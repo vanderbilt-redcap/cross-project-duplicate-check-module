@@ -11,8 +11,8 @@ require_once ExternalModules::getProjectHeaderPath();
 
 $title = \REDCap::getProjectTitle();
 $firstField = \REDCap::getRecordIdField();
-$dupcheckObject = new DupcheckExternalModule();
-$settings = ExternalModules::getProjectSettingsAsArray($dupcheckObject->PREFIX, $_GET['pid']);
+$pid = $module->getProjectId();
+$settings = ExternalModules::getProjectSettingsAsArray($module->PREFIX, $pid);
 
 $project_ids = $settings['project-id']['value'];
 if (!is_array($project_ids)) {
@@ -30,11 +30,11 @@ $fieldsToAcquire[] = $firstField;
 $projectTitles = array();
 if (isset($_GET['location'])) {
 	if ($_GET['location'] == "all") { 
-		if (!in_array($_GET['pid'], $project_ids)) {
-			$project_ids[] = $_GET['pid'];
+		if (!in_array($pid, $project_ids)) {
+			$project_ids[] = $pid;
 		}
 	} else if ($_GET['location'] == "this") {
-		$project_ids = array($_GET['pid']);
+		$project_ids = array($pid);
 	}
 	else {
 		# invalid
