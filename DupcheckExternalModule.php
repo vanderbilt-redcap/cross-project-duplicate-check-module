@@ -31,13 +31,9 @@ class DupcheckExternalModule extends AbstractExternalModule
 
                         const checkDuplicateData = () => {
                             var fields = <?=json_encode($fields)?>;
-                            var projectIDs = <?=json_encode($projectIDs)?>;
                             var fieldValues = getModuleFieldValues(fields);
                             if (fieldValues.length == fields.length) {
                                 module.ajax('check for duplicates',  {
-                                    'currentproject': <?=json_encode($project_id)?>,
-                                    'fields': fields,
-                                    'projects': projectIDs,
                                     'fieldValues': fieldValues,
                                 }).then((response) => {
                                     if (response != '0') {
@@ -163,5 +159,22 @@ class DupcheckExternalModule extends AbstractExternalModule
                 $returnString = '';
         }
         return $returnString;
+    }
+
+    function parseRecordSetting($recordsetting,$recorddata) {
+        $returnString = $recordsetting;
+        preg_match_all("/\[(.*?)\]/",$recordsetting,$matchRegEx);
+        $stringsToReplace = $matchRegEx[0];
+        $fieldNamesReplace = $matchRegEx[1];
+        foreach ($fieldNamesReplace as $index => $fieldName) {
+            $returnString = db_real_escape_string(str_replace($stringsToReplace[$index],$recorddata[$fieldName],$returnString));
+        }
+        return $returnString;
+    }
+    
+    function validateDate($date,$format='Y-m-d') {
+        $d = \DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
     }
 }

@@ -1,9 +1,8 @@
 <?php
 
-$fieldList = $payload['fields'];
-$projects = $payload['projects'];
+$fieldList = $this->getProjectSetting('field');
+$projects = $this->getProjectSetting('project-id');
 $fieldValues = $payload['fieldValues'];
-$project_id = $payload['currentproject'];
 $currentProject = new \Project($project_id);
 $currentMeta = $currentProject->metadata;
 $dateValidations = array('date_mdy','date_dmy','date_ymd','datetime_mdy','datetime_dmy','datetime_ymd','datetime_seconds_mdy','datetime_seconds_dmy','datetime_seconds_ymd');
@@ -16,11 +15,11 @@ foreach ($fieldList as $index => $fieldName) {
     $fieldData[$fieldName] = $fieldValues[$index][0];
 }
 
-$alertMessage = parseRecordSetting($alertMessage,$fieldData);
+$alertMessage = $this->parseRecordSetting($alertMessage,$fieldData);
 
 $fieldNameValues = array();
 foreach ($fieldList as $index => $field) {
-    if (validateDate($fieldValues[$index][0],$this->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php'))) {
+    if ($this->validateDate($fieldValues[$index][0],$this->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php'))) {
         if (in_array($currentMeta[$field]['element_validation_type'], $dateValidations)) {
             $dateFormatting = $this->getDateFormat($currentMeta[$field]['element_validation_type'], $field, 'php');
             $date = DateTime::createFromFormat($dateFormatting, $fieldValues[$index][0]);
@@ -44,20 +43,3 @@ foreach ($projects as $projectID) {
 }
 
 return $duplicate;
-
-function parseRecordSetting($recordsetting,$recorddata) {
-    $returnString = $recordsetting;
-    preg_match_all("/\[(.*?)\]/",$recordsetting,$matchRegEx);
-    $stringsToReplace = $matchRegEx[0];
-    $fieldNamesReplace = $matchRegEx[1];
-    foreach ($fieldNamesReplace as $index => $fieldName) {
-        $returnString = db_real_escape_string(str_replace($stringsToReplace[$index],$recorddata[$fieldName],$returnString));
-    }
-    return $returnString;
-}
-
-function validateDate($date,$format='Y-m-d') {
-    $d = DateTime::createFromFormat($format, $date);
-    // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
-    return $d && $d->format($format) === $date;
-}
