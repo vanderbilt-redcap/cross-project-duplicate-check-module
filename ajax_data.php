@@ -30,6 +30,10 @@ foreach ($fieldList as $index => $field) {
 }
 
 foreach ($projects as $projectID) {
+    if(empty($projectID)){
+        continue;
+    }
+
     $recordData = json_decode(\REDCap::getData($projectID,'json',array(),$fieldList,array(), array(), false, false, false, implode(" AND ",$fieldNameValues)),true);
 
     if (!empty($recordData)) {
