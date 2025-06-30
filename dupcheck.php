@@ -110,7 +110,7 @@ if (isset($_GET['location'])) {
 	echo "<p>The following projects have all the primary-key fields (".implode(", ", $fields).") matching.</p>";
 	$i = 0;
 	foreach ($sortedAry as $str => $ary) {
-		if (count($ary) > 1) {
+		if ($str!=$sep && count($ary) > 1) {
 			$i++;
 			echo "<p><b>Match $i</b>";
 
